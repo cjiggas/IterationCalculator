@@ -23,12 +23,12 @@ public class TwoGuessMethodPanel extends JPanel {
 
         // Function label
         JLabel funcLabel = new JLabel("Enter Function f(x)");
-        funcLabel.setFont(new Font("SansSerif", Font.BOLD, 17));
+        funcLabel.setFont(new Font("Consolas", Font.BOLD, 17));
         left.add(funcLabel, "span 2, wrap");
 
         // Function input in RoundedPanel
         functionField = new PlaceholderTextField("e.g., x^2 - 4x + 4");
-        functionField.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        functionField.setFont(new Font("Monospaced", Font.PLAIN, 16));
         functionField.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         functionField.setBackground(new Color(245, 247, 250));
         RoundedPanel functionPanel = new RoundedPanel(28, new Color(245, 247, 250));
@@ -38,16 +38,16 @@ public class TwoGuessMethodPanel extends JPanel {
 
         // Initial Guess labels
         JLabel guessLabel1 = new JLabel("Initial Guess");
-        guessLabel1.setFont(new Font("SansSerif", Font.BOLD, 14));
+        guessLabel1.setFont(new Font("Consolas", Font.BOLD, 17));
         left.add(guessLabel1);
 
         JLabel guessLabel2 = new JLabel("Initial Guess");
-        guessLabel2.setFont(new Font("SansSerif", Font.BOLD, 14));
+        guessLabel2.setFont(new Font("Consolas", Font.BOLD, 17));
         left.add(guessLabel2, "wrap");
 
         // Initial Guess fields in RoundedPanels
         initialGuessField1 = new PlaceholderTextField("e.g., x₀ = 1");
-        initialGuessField1.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        initialGuessField1.setFont(new Font("Monospaced", Font.PLAIN, 16));
         initialGuessField1.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         initialGuessField1.setBackground(new Color(245, 247, 250));
         RoundedPanel guessPanel1 = new RoundedPanel(28, new Color(245, 247, 250));
@@ -56,7 +56,7 @@ public class TwoGuessMethodPanel extends JPanel {
         left.add(guessPanel1, "h 44!, growx");
 
         initialGuessField2 = new PlaceholderTextField("e.g., x₁ = 2");
-        initialGuessField2.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        initialGuessField2.setFont(new Font("Monospaced", Font.PLAIN, 16));
         initialGuessField2.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         initialGuessField2.setBackground(new Color(245, 247, 250));
         RoundedPanel guessPanel2 = new RoundedPanel(28, new Color(245, 247, 250));
@@ -65,24 +65,24 @@ public class TwoGuessMethodPanel extends JPanel {
         left.add(guessPanel2, "h 44!, growx, wrap");
 
         // Initial Guess hints
-        JLabel guessHint1 = new JLabel("Starting point for iteration for x₀");
-        guessHint1.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        JLabel guessHint1 = new JLabel("Intial guess for x₀");
+        guessHint1.setFont(new Font("Monospaced", Font.PLAIN, 16));
         guessHint1.setForeground(new Color(150, 150, 150));
         left.add(guessHint1);
 
-        JLabel guessHint2 = new JLabel("Starting point for iteration for x₁");
-        guessHint2.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        JLabel guessHint2 = new JLabel("Intial guess for x₁");
+        guessHint2.setFont(new Font("Monospaced", Font.PLAIN, 16));
         guessHint2.setForeground(new Color(150, 150, 150));
         left.add(guessHint2, "wrap");
 
         // Tolerance label
         JLabel tolLabel = new JLabel("Tolerance");
-        tolLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        tolLabel.setFont(new Font("Consolas", Font.BOLD, 17));
         left.add(tolLabel, "span 2, wrap");
 
         // Tolerance field in RoundedPanel
         toleranceField = new PlaceholderTextField("e.g., 0.0001");
-        toleranceField.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        toleranceField.setFont(new Font("Monospaced", Font.PLAIN, 16));
         toleranceField.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         toleranceField.setBackground(new Color(245, 247, 250));
         RoundedPanel tolPanel = new RoundedPanel(28, new Color(245, 247, 250));
@@ -92,28 +92,28 @@ public class TwoGuessMethodPanel extends JPanel {
 
         // Tolerance hint
         JLabel tolHint = new JLabel("Desired accuracy of result");
-        tolHint.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        tolHint.setFont(new Font("Monospaced", Font.PLAIN, 16));
         tolHint.setForeground(new Color(150, 150, 150));
         left.add(tolHint, "span 2, wrap");
 
-        // Description Panel in RoundedPanel
-        RoundedPanel descPanel = new RoundedPanel(28, new Color(245, 247, 250));
-        descPanel.setLayout(new BorderLayout());
-        JLabel descTitle = new JLabel("Method Description");
-        descTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
-        descTitle.setForeground(Color.BLACK);
-        descTitle.setBorder(BorderFactory.createEmptyBorder(8, 16, 0, 0));
-        JTextArea desc = new JTextArea(methodDescription);
-        desc.setLineWrap(true);
-        desc.setWrapStyleWord(true);
-        desc.setEditable(false);
-        desc.setOpaque(false);
-        desc.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        desc.setForeground(Color.DARK_GRAY);
-        desc.setBorder(BorderFactory.createEmptyBorder(0, 16, 12, 16));
-        descPanel.add(descTitle, BorderLayout.NORTH);
-        descPanel.add(desc, BorderLayout.CENTER);
-        left.add(descPanel, "span 2, growx, h 80!, wrap");
+        //  Description Panel in RoundedPanel
+        // RoundedPanel descPanel = new RoundedPanel(28, new Color(245, 247, 250));
+        // descPanel.setLayout(new BorderLayout());
+        // JLabel descTitle = new JLabel("Method Description");
+        // descTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
+        // descTitle.setForeground(Color.BLACK);
+        // descTitle.setBorder(BorderFactory.createEmptyBorder(8, 16, 0, 0));
+        // JTextArea desc = new JTextArea(methodDescription);
+        // desc.setLineWrap(true);
+        // desc.setWrapStyleWord(true);
+        // desc.setEditable(false);
+        // desc.setOpaque(false);
+        // desc.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        // desc.setForeground(Color.DARK_GRAY);
+        // desc.setBorder(BorderFactory.createEmptyBorder(0, 16, 12, 16));
+        // descPanel.add(descTitle, BorderLayout.NORTH);
+        // descPanel.add(desc, BorderLayout.CENTER);
+        // left.add(descPanel, "span 2, growx, h 80!, wrap");
 
         // Calculate button in RoundedPanel
         calculateButton = new JButton("Calculate");
@@ -136,14 +136,14 @@ public class TwoGuessMethodPanel extends JPanel {
         RoundedPanel historyPanel = new RoundedPanel(28, new Color(245, 247, 250));
         historyPanel.setLayout(new BorderLayout());
         JLabel historyLabel = new JLabel("Calculation History");
-        historyLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        historyLabel.setFont(new Font("Consolas", Font.BOLD, 17));
         historyLabel.setForeground(Color.BLACK);
         historyLabel.setBorder(BorderFactory.createEmptyBorder(10, 18, 0, 0));
         historyPanel.add(historyLabel, BorderLayout.NORTH);
 
         historyArea = new JTextArea("No calculations yet. Start by entering a function.");
         historyArea.setEditable(false);
-        historyArea.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        historyArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
         historyArea.setBackground(new Color(245, 247, 250));
         historyArea.setForeground(new Color(150, 150, 150));
         historyArea.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
@@ -161,15 +161,15 @@ public class TwoGuessMethodPanel extends JPanel {
 
         RoundedPanel answerPanel = new RoundedPanel(28, new Color(245, 247, 250));
         answerPanel.setLayout(new BorderLayout());
-        JLabel answerLabel = new JLabel("Answer");
-        answerLabel.setFont(new Font("SansSerif", Font.BOLD, 15));
+        JLabel answerLabel = new JLabel("Root");
+        answerLabel.setFont(new Font("Consolas", Font.BOLD, 17));
         answerLabel.setForeground(Color.BLACK);
         answerLabel.setBorder(BorderFactory.createEmptyBorder(10, 18, 0, 0));
         answerPanel.add(answerLabel, BorderLayout.NORTH);
 
         answerField = new JTextField();
         answerField.setEditable(false);
-        answerField.setFont(new Font("SansSerif", Font.BOLD, 16));
+        answerField.setFont(new Font("Monospaced", Font.BOLD, 15));
         answerField.setBackground(new Color(245, 247, 250));
         answerField.setForeground(Color.DARK_GRAY);
         answerField.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
