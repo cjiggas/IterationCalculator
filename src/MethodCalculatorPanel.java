@@ -202,12 +202,12 @@ public class MethodCalculatorPanel extends JPanel {
             setName("Newton-Raphson");
         } else if (methodDescription.toLowerCase().contains("fixed-point")) {
             setName("Fixed-Point");
-        } else if (methodDescription.toLowerCase().contains("bisection")) {
-            setName("Bisection");
-        } else if (methodDescription.toLowerCase().contains("secant")) {
-            setName("Secant");
         } else if (methodDescription.toLowerCase().contains("false position")) {
             setName("False Position");
+        } else if (methodDescription.toLowerCase().contains("secant")) {
+            setName("Secant");
+        } else if (methodDescription.toLowerCase().contains("bisection")) {
+            setName("Bisection");
         }
 
         calculateButton.addActionListener(e -> {
@@ -311,7 +311,7 @@ public class MethodCalculatorPanel extends JPanel {
                     CalculatorBackend.secant(function, x0, x1, tol, 1, maxSteps, steps);
                     break;
                 case "False Position":
-                    CalculatorBackend.falsePosition(function, x0, x1, tol, 1, 1000, steps);
+                    CalculatorBackend.falsePosition(function, x0, x1, tol, 1, maxSteps, steps);
                     break;
                 default:
                     showError("Error: Unknown method.");

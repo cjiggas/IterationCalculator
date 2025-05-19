@@ -36,17 +36,11 @@ public class CalculatorSwing extends JFrame {
         JTabbedPane tabs = new JTabbedPane();
 
         String[] tabNames = {"Newton-Raphson", "Secant", "Bisection", "Fixed-Point", "False Position"};
-        String[] tabDescriptions = {
-            "Newton's method finds successively better approximations using the function's derivative.",
-            "The Secant method uses a sequence of roots of secant lines to approximate a root of a function.",
-            "The Bisection method repeatedly bisects an interval and selects a subinterval in which a root must lie.",
-            "The Fixed-Point method iterates a function to find a point where f(x) = x.",
-            "The False Position method is similar to bisection but uses a secant line to find the root."
-        };
+        
         boolean[] hasTwoGuesses = {false, true, true, false, true};
 
         for (int i = 0; i < tabNames.length; i++) {
-            tabs.addTab(tabNames[i], new MethodCalculatorPanel(tabDescriptions[i], hasTwoGuesses[i]));
+            tabs.addTab(tabNames[i], new MethodCalculatorPanel(tabNames[i], hasTwoGuesses[i]));
             JLabel tabLabel = new JLabel(tabNames[i]);
             tabLabel.setFont(new Font("Consolas", Font.PLAIN, 16)); 
             tabLabel.setForeground(Color.BLACK); 
