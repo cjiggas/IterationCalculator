@@ -1,5 +1,6 @@
 import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Arrays;
@@ -17,10 +18,16 @@ public class MethodCalculatorPanel extends JPanel {
     public MethodCalculatorPanel(String methodDescription, boolean hasTwoGuesses) {
         this.hasTwoGuesses = hasTwoGuesses;
 
-        Color outlineColor = new Color(200, 210, 230); // soft blue/gray outline
-        int radius = 40; // rounder corners
+        // Replace the color definitions at the start with these dark theme colors
+        Color outlineColor = new Color(64, 69, 82);  // darker blue-gray for borders
+        Color backgroundColor = new Color(32, 33, 36);  // dark background
+        Color panelBackgroundColor = new Color(41, 42, 45);  // slightly lighter than background
+        Color textColor = new Color(220, 220, 220);  // light gray for text
+        Color hintTextColor = new Color(128, 128, 128);  // medium gray for hints
+        Color accentColor = new Color(86, 128, 194);  // muted blue for button
 
-        setBackground(new Color(250, 252, 255));
+        // Main panel background
+        setBackground(backgroundColor);
         setLayout(new MigLayout("fill, insets 32, gap 32", "[grow,fill][grow,fill]", "[grow,fill]"));
 
         // Left panel for inputs
@@ -30,52 +37,86 @@ public class MethodCalculatorPanel extends JPanel {
         left.setOpaque(false);
 
         // Function label
-        JLabel funcLabel = new JLabel("Enter Function f(x)");
+        JLabel funcLabel;
+        if (methodDescription.toLowerCase().contains("fixed-point")) {
+            funcLabel = new JLabel("Enter Function g(x)");
+        } else {
+            funcLabel = new JLabel("Enter Function f(x)");
+        }
         funcLabel.setFont(new Font("Consolas", Font.BOLD, 17));
+        funcLabel.setForeground(textColor);
         left.add(funcLabel, "span 2, wrap");
 
         // Function input in RoundedPanel
-        functionField = new PlaceholderTextField("e.g., x^2 - 4x + 4");
+        String placeholder = methodDescription.toLowerCase().contains("fixed-point") ? 
+            "e.g., sqrt(4+x)" : "e.g., x^2 - 4x + 4";
+        functionField = new PlaceholderTextField(placeholder);
         functionField.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        functionField.setBorder(null); // Remove outline
-        functionField.setBackground(new Color(245, 247, 250));
-        RoundedPanel functionPanel = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
+        functionField.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(21, outlineColor, 3),  // outer border with rounded corners
+            BorderFactory.createEmptyBorder(8, 16, 8, 16)  // inner padding
+        ));
+        functionField.setBackground(panelBackgroundColor);
+        functionField.setForeground(textColor);
+        functionField.setCaretColor(textColor);
+        functionField.setOpaque(true);
+
+        // Create panel with proper radius and padding
+        RoundedPanel functionPanel = new RoundedPanel(27, panelBackgroundColor, outlineColor);
         functionPanel.setLayout(new BorderLayout());
         functionPanel.add(functionField, BorderLayout.CENTER);
-        left.add(functionPanel, "span 2, h 48!, growx, wrap");
+        left.add(functionPanel, "span 2, h 54!, growx, wrap"); // Increased height from 48 to 54
 
         // Initial Guess labels
         JLabel guessLabel1 = new JLabel("Initial Guess");
         guessLabel1.setFont(new Font("Consolas", Font.BOLD, 17));
+        guessLabel1.setForeground(textColor);
         left.add(guessLabel1);
 
         JLabel guessLabel2 = new JLabel("Initial Guess");
         guessLabel2.setFont(new Font("Consolas", Font.BOLD, 17));
+        guessLabel2.setForeground(textColor);
         if (hasTwoGuesses) {
             left.add(guessLabel2, "wrap");
         } else {
             left.add(new JLabel(), "wrap");
         }
 
-        // Initial Guess fields in RoundedPanels
+        // Initial Guess fields
         initialGuessField1 = new PlaceholderTextField(hasTwoGuesses ? "e.g., x₀ = 1" : "e.g., 1.0");
         initialGuessField1.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        initialGuessField1.setBorder(null); // Remove outline
-        initialGuessField1.setBackground(new Color(245, 247, 250));
-        RoundedPanel guessPanel1 = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
-        guessPanel1.setLayout(new BorderLayout());
-        guessPanel1.add(initialGuessField1, BorderLayout.CENTER);
-        left.add(guessPanel1, "h 48!, growx");
+        initialGuessField1.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(21, outlineColor, 3),
+            BorderFactory.createEmptyBorder(8, 16, 8, 16)
+        ));
+        initialGuessField1.setBackground(panelBackgroundColor);
+        initialGuessField1.setForeground(textColor);
+        initialGuessField1.setCaretColor(textColor);
+        initialGuessField1.setOpaque(true);
+
+        // Add first initial guess field
+        RoundedPanel guess1Panel = new RoundedPanel(27, panelBackgroundColor, outlineColor);
+        guess1Panel.setLayout(new BorderLayout());
+        guess1Panel.add(initialGuessField1, BorderLayout.CENTER);
+        left.add(guess1Panel, "h 54!, growx");
 
         if (hasTwoGuesses) {
             initialGuessField2 = new PlaceholderTextField("e.g., x₁ = 2");
             initialGuessField2.setFont(new Font("Monospaced", Font.PLAIN, 16));
-            initialGuessField2.setBorder(null); // Remove outline
-            initialGuessField2.setBackground(new Color(245, 247, 250));
-            RoundedPanel guessPanel2 = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
-            guessPanel2.setLayout(new BorderLayout());
-            guessPanel2.add(initialGuessField2, BorderLayout.CENTER);
-            left.add(guessPanel2, "h 48!, growx, wrap");
+            initialGuessField2.setBorder(BorderFactory.createCompoundBorder(
+                new RoundedBorder(21, outlineColor, 3),
+                BorderFactory.createEmptyBorder(8, 16, 8, 16)
+            ));
+            initialGuessField2.setBackground(panelBackgroundColor);
+            initialGuessField2.setForeground(textColor);
+            initialGuessField2.setCaretColor(textColor);
+            initialGuessField2.setOpaque(true);
+
+            // Add second initial guess field
+            RoundedPanel guess2Panel = new RoundedPanel(27, panelBackgroundColor, outlineColor);
+            guess2Panel.setLayout(new BorderLayout());
+            guess2Panel.add(initialGuessField2, BorderLayout.CENTER);
+            left.add(guess2Panel, "h 54!, growx, wrap");
         } else {
             left.add(new JLabel(), "wrap");
         }
@@ -83,13 +124,13 @@ public class MethodCalculatorPanel extends JPanel {
         // Initial Guess hints
         JLabel guessHint1 = new JLabel(hasTwoGuesses ? "Initial guess for x₀" : "Starting point for iteration");
         guessHint1.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        guessHint1.setForeground(new Color(150, 150, 150));
+        guessHint1.setForeground(hintTextColor);
         left.add(guessHint1);
 
         if (hasTwoGuesses) {
             JLabel guessHint2 = new JLabel("Initial guess for x₁");
             guessHint2.setFont(new Font("Monospaced", Font.PLAIN, 14));
-            guessHint2.setForeground(new Color(150, 150, 150));
+            guessHint2.setForeground(hintTextColor);
             left.add(guessHint2, "wrap");
         } else {
             left.add(new JLabel(), "wrap");
@@ -98,100 +139,118 @@ public class MethodCalculatorPanel extends JPanel {
         // Tolerance label
         JLabel tolLabel = new JLabel("Tolerance");
         tolLabel.setFont(new Font("Consolas", Font.BOLD, 17));
+        tolLabel.setForeground(textColor);
         left.add(tolLabel, "span 2, wrap");
 
-        // Tolerance field in RoundedPanel
+        // Tolerance field with rounded panel
         toleranceField = new PlaceholderTextField("e.g., 0.0001");
         toleranceField.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        toleranceField.setBorder(null); // Remove outline
-        toleranceField.setBackground(new Color(245, 247, 250));
-        RoundedPanel tolPanel = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
-        tolPanel.setLayout(new BorderLayout());
-        tolPanel.add(toleranceField, BorderLayout.CENTER);
-        left.add(tolPanel, "span 2, h 48!, growx, wrap");
+        toleranceField.setBorder(BorderFactory.createCompoundBorder(
+            new RoundedBorder(21, outlineColor, 3),
+            BorderFactory.createEmptyBorder(8, 16, 8, 16)
+        ));
+        toleranceField.setBackground(panelBackgroundColor);
+        toleranceField.setForeground(textColor);
+        toleranceField.setCaretColor(textColor);
+        toleranceField.setOpaque(true);
+
+        // Add tolerance field in rounded panel
+        RoundedPanel tolerancePanel = new RoundedPanel(27, panelBackgroundColor, outlineColor);
+        tolerancePanel.setLayout(new BorderLayout());
+        tolerancePanel.add(toleranceField, BorderLayout.CENTER);
+        left.add(tolerancePanel, "span 2, h 54!, growx, wrap");
 
         // Tolerance hint
         JLabel tolHint = new JLabel("Desired accuracy of result");
-        tolHint.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tolHint.setForeground(new Color(150, 150, 150));
+        tolHint.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        tolHint.setForeground(hintTextColor);
         left.add(tolHint, "span 2, wrap");
 
-        // Description Panel in RoundedPanel
-        // RoundedPanel descPanel = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
-        // descPanel.setLayout(new BorderLayout());
-        // JLabel descTitle = new JLabel("Method Description");
-        // descTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
-        // descTitle.setForeground(Color.BLACK);
-        // descTitle.setBorder(BorderFactory.createEmptyBorder(8, 16, 0, 0));
-        // JTextArea desc = new JTextArea(methodDescription);
-        // desc.setLineWrap(true);
-        // desc.setWrapStyleWord(true);
-        // desc.setEditable(false);
-        // desc.setOpaque(false);
-        // desc.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        // desc.setForeground(Color.DARK_GRAY);
-        // desc.setBorder(BorderFactory.createEmptyBorder(0, 16, 12, 16));
-        // descPanel.add(descTitle, BorderLayout.NORTH);
-        // descPanel.add(desc, BorderLayout.CENTER);
-        // left.add(descPanel, "span 2, growx, h 80!, wrap");
-
-        // Calculate button in RoundedPanel
+       
+        // Calculate button - fully rounded, no panel wrapper
         calculateButton = new JButton("Calculate");
         calculateButton.setFont(new Font("Consolas", Font.BOLD, 18));
-        calculateButton.setBackground(new Color(51, 102, 255));
-        calculateButton.setForeground(Color.WHITE);
+        calculateButton.setBackground(accentColor);
+        calculateButton.setForeground(textColor);
         calculateButton.setFocusPainted(false);
-        calculateButton.setBorder(null); // Remove outline
-        RoundedPanel calcPanel = new RoundedPanel(radius, new Color(51, 102, 255), outlineColor);
-        calcPanel.setLayout(new BorderLayout());
-        calcPanel.add(calculateButton, BorderLayout.CENTER);
-        left.add(calcPanel, "span 2, growx, h 54!, gaptop 30, aligny bottom");
+        calculateButton.setBorderPainted(true);
+        calculateButton.setContentAreaFilled(false);
+       
+
+        // Custom painting for smooth rounded background
+        calculateButton.setUI(new BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(calculateButton.getBackground());
+                g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), 54, 54);
+                super.paint(g, c);
+                g2.dispose();
+            }
+        });
+
+        // Add directly to the layout, not inside a RoundedPanel
+        left.add(calculateButton, "span 2, growx, h 54!, gaptop 30, aligny bottom");
 
         // Right panel for history and answer
         JPanel right = new JPanel(new MigLayout("fill, wrap 1", "[grow]", "[grow][]"));
         right.setOpaque(false);
 
-        RoundedPanel historyPanel = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
+        int radius = 21; // Define the radius value for rounded panels
+        RoundedPanel historyPanel = new RoundedPanel(radius, panelBackgroundColor, outlineColor);
         historyPanel.setLayout(new BorderLayout());
+
+        // Update history label styling
         JLabel historyLabel = new JLabel("Calculation History");
-        historyLabel.setFont(new Font("Consolas", Font.BOLD, 17));
-        historyLabel.setForeground(Color.BLACK);
+        historyLabel.setFont(new Font("Consolas", Font.BOLD, 20));
+        historyLabel.setForeground(textColor);
         historyLabel.setBorder(BorderFactory.createEmptyBorder(10, 18, 0, 0));
         historyPanel.add(historyLabel, BorderLayout.NORTH);
 
+        // Update history area styling
         historyArea = new JTextArea("No calculations yet. Start by entering a function.");
         historyArea.setEditable(false);
-        historyArea.setFont(new Font("Monospaced", Font.PLAIN, 15)); 
-        historyArea.setBackground(new Color(245, 247, 250));
-        historyArea.setForeground(new Color(150, 150, 150));
+        historyArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
+        historyArea.setBackground(panelBackgroundColor);
+        historyArea.setForeground(textColor);
         historyArea.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
         historyArea.setLineWrap(true);
         historyArea.setWrapStyleWord(true);
 
+        // Create scroll pane with rounded corners
         JScrollPane scrollPane = new JScrollPane(historyArea);
         scrollPane.setBorder(null);
-        scrollPane.setBackground(new Color(245, 247, 250));
+        scrollPane.setBackground(panelBackgroundColor);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
+
+        // Add to historyPanel
         historyPanel.add(scrollPane, BorderLayout.CENTER);
         right.add(historyPanel, "grow, push");
 
-        RoundedPanel answerPanel = new RoundedPanel(radius, new Color(245, 247, 250), outlineColor);
-        answerPanel.setLayout(new BorderLayout());
+        RoundedPanel answerPanel = new RoundedPanel(radius, panelBackgroundColor, outlineColor);
+        answerPanel.setLayout(new MigLayout("insets 0, gap 0", "[grow]", "[][]"));
+
+        // Update Root label with white text
         JLabel answerLabel = new JLabel("Root");
         answerLabel.setFont(new Font("Consolas", Font.BOLD, 20));
-        answerLabel.setForeground(Color.BLACK);
+        answerLabel.setForeground(textColor);  // Using textColor (light gray/white) from theme
         answerLabel.setBorder(BorderFactory.createEmptyBorder(10, 18, 0, 0));
-        answerPanel.add(answerLabel, BorderLayout.NORTH);
 
+        // Update answer field with dark theme colors
         answerField = new JTextField();
         answerField.setEditable(false);
         answerField.setFont(new Font("Monospaced", Font.BOLD, 15));
-        answerField.setBackground(new Color(245, 247, 250));
-        answerField.setForeground(Color.DARK_GRAY);
-        answerField.setBorder(new RoundedBorder(radius, outlineColor));
-        answerPanel.add(answerField, BorderLayout.CENTER);
+        answerField.setBackground(panelBackgroundColor);  // Dark background
+        answerField.setForeground(Color.WHITE); 
+        answerField.setCaretColor(Color.WHITE);
+        answerField.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        answerField.setOpaque(true);
+
+        answerPanel.add(answerLabel, "wrap");
+        answerPanel.add(answerField, "growx");
         right.add(answerPanel, "growx, h 85!");
 
         add(left, "grow, push, w 50%");
@@ -213,11 +272,16 @@ public class MethodCalculatorPanel extends JPanel {
         calculateButton.addActionListener(e -> {
             calculateButton.setEnabled(false);
             calculateButton.setText("Calculating...");
-            answerField.setForeground(Color.DARK_GRAY);
+            answerField.setForeground(Color.white);
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() {
-                    performCalculation();
+                    try {
+                        Thread.sleep(2000); // 2 second delay
+                        performCalculation();
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
                     return null;
                 }
 
@@ -288,7 +352,24 @@ public class MethodCalculatorPanel extends JPanel {
                 showError("Error: Initial guesses x₀ and x₁ must be different.");
                 return;
             }
+
+        String method = getName();
+        if (method.equals("Bisection") || method.equals("False Position") || method.equals("Secant")) {
+            try {
+                double fx0 = CalculatorBackend.evaluateFunction(function, x0);
+                double fx1 = CalculatorBackend.evaluateFunction(function, x1);
+                if (fx0 * fx1 >= 0) {
+                    showError("Error: Initial guesses must bracket the root (f(x₀) and f(x₁) must have opposite signs).");
+                    return;
+                }
+            } catch (Exception e) {
+                showError("Error evaluating function: " + e.getMessage());
+                return;
+            }
         }
+        } 
+        
+
 
         try {
             // Clear old data
@@ -388,7 +469,7 @@ public class MethodCalculatorPanel extends JPanel {
                         root = 0; // or handle error
                 }
                 double roundedRoot = CalculatorBackend.roundToTolerance(root, tol);
-                answerField.setForeground(Color.BLACK);
+                answerField.setForeground(Color.WHITE);
                 answerField.setText(String.valueOf(roundedRoot));
             } else {
                 showError("No steps returned. Calculation failed.");
