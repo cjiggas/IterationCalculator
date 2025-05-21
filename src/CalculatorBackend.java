@@ -5,18 +5,22 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+//Backend class for the Calculator
 public class CalculatorBackend {
 
-    // Evaluate function f(x)
+    // For Evaluating function f(x)
+    // using exp4j library
+    //This handles the parsing of the equation and variable substitution
     public static double evaluateFunction(String equation, double x) throws Exception {
         Expression expression = new ExpressionBuilder(equation)
                 .variables("x")
                 .build()
                 .setVariable("x", x);
+        // Evaluate the expression with the given value of x
         return expression.evaluate();
     }
 
-    // Numerical derivative f'(x) using central difference
+    // For Numerical derivative f'(x) 
     public static double derivative(String equation, double x) throws Exception {
         double h = 1e-6;
         double fxh1 = evaluateFunction(equation, x + h);
@@ -56,6 +60,7 @@ public class CalculatorBackend {
         public Double getX2() { return x2; }
         public Double getFx() { return fx; }
 
+        //String printing for the step in Calculation History
         @Override
         public String toString() {
             if (xn != null && xn1 != null) {
@@ -79,6 +84,7 @@ public class CalculatorBackend {
         return bd.doubleValue();
     }
 
+    // Format String value to the decimal places implied by tolerance
     public static String formatToTolerance(double value, double tolerance) {
         int decimalPlaces = (int) Math.ceil(-Math.log10(tolerance));
         StringBuilder pattern = new StringBuilder("0");
@@ -90,20 +96,10 @@ public class CalculatorBackend {
         return df.format(roundToTolerance(value, tolerance));
     }
 
-    /**
-     * Fixed Point Iteration Method
-     * 
-     * @param equation  g(x) equation for fixed point iteration
-     * @param x0        initial guess
-     * @param tolerance convergence tolerance
-     * @param step      current step number (start from 1)
-     * @param maxSteps  maximum allowed steps
-     * @param steps     list to record iteration steps
-     * @return          approximated root or null if convergence fails
-     * @throws Exception on exceeding max steps or if derivative condition fails
-     */
+    // Fixed Point Iteration
     public static Double fixedPoint(String equation, double x0, double tolerance, int step, int maxSteps, List<Step> steps) throws Exception {
 
+        // Check for valid initial guess
         if (step > maxSteps) {
             throw new Exception("Maximum Number of Iterations Exceeded. Try checking the function or initial guess.");
         }
@@ -113,113 +109,96 @@ public class CalculatorBackend {
             throw new Exception("The derivative at x0 is >= 1, Fixed Point Iteration may not converge.");
         }
 
+        // Calculate next approximation
         double x1 = evaluateFunction(equation, x0);
+        // Add step to the list
         steps.add(new Step(step, x0, x1, tolerance));
 
+        // Check for convergence
         if (Math.abs(x1 - x0) <= tolerance) {
             return x1;
         }
-
+        //Recursion
         return fixedPoint(equation, x1, tolerance, step + 1, maxSteps, steps);
     }
 
-    /**
-     * Newton-Raphson Method
-     * 
-     * @param equation  function f(x)
-     * @param x0        initial guess
-     * @param tolerance convergence tolerance
-     * @param step      current step number (start from 1)
-     * @param steps     list to record iteration steps
-     * @return          list of Steps until convergence
-     * @throws Exception on zero derivative or failure
-     */
+    // Newton-Raphson Method
     public static List<Step> newton(String equation, double x0, double tolerance, int step, List<Step> steps) throws Exception {
+        
+        // Evaluate function and derivative at x0
         double fx = evaluateFunction(equation, x0);
         double dfx = derivative(equation, x0);
 
+        // Check for maximum iterations
         if (dfx == 0) {
             throw new ArithmeticException("Derivative is zero at x = " + x0);
         }
 
+        //Calculate next approximation
         double x1 = x0 - fx / dfx;
-        x1 = roundToTolerance(x1, tolerance);
+        //Add step to the list
         steps.add(new Step(step, x0, x1, tolerance)); 
 
-        if (Math.abs(x1 - x0) < tolerance || Math.abs(fx) < tolerance) {
+        // Check for convergence
+        if (Math.abs(x1 - x0) <= tolerance || Math.abs(fx) <= tolerance) {
             return steps;
         }
 
+        //Recursion
         return newton(equation, x1, tolerance, step + 1, steps);
     }
 
-    /**
-     * Bisection Method
-     * 
-     * @param equation  function f(x)
-     * @param x0        interval start
-     * @param x1        interval end
-     * @param tolerance convergence tolerance
-     * @param step      current step number (start from 1)
-     * @param maxSteps  maximum allowed steps
-     * @param steps     list to record iteration steps
-     * @return          approximated root or null if fails
-     * @throws Exception on invalid interval or exceeding max steps
-     */
+    //Bisection Method
     public static Double bisection(String equation, double x0, double x1, double tolerance, int step, int maxSteps, List<Step> steps) throws Exception {
 
-        if (step == 1) {
-            double f0 = evaluateFunction(equation, x0);
-            double f1 = evaluateFunction(equation, x1);
-            if (f0 * f1 >= 0) {
-                throw new Exception("Function values at the interval endpoints must have opposite signs.");
-            }
+        //Evaluate function at x0 and x1
+        double f0 = evaluateFunction(equation, x0);
+        double f1 = evaluateFunction(equation, x1);
+
+        // Check for valid interval
+        if (f0 * f1 >= 0) {
+            throw new Exception("Function values at the interval endpoints must have opposite signs.");
         }
 
+        // Check for maximum iterations
         if (step > maxSteps) {
             throw new Exception("Maximum Number of Iterations Exceeded.");
         }
 
+        // Calculate midpoint
         double x2 = (x0 + x1) / 2.0;
         double fx2 = evaluateFunction(equation, x2);
-        x2 = roundToTolerance(x2, tolerance);
-
+        //Add step to the list
         steps.add(new Step(step, x0, x1, x2, fx2, tolerance));
 
+        // Check for convergence
         if (Math.abs(fx2) <= tolerance || Math.abs(x1 - x0) <= tolerance) {
             return x2;
         }
 
-
+        //Recursion
+        // Update interval for next step
         if (evaluateFunction(equation, x0) * fx2 < 0) {
+            // Root is between x0 and x2
             return bisection(equation, x0, x2, tolerance, step + 1, maxSteps, steps);
         } else {
+            // Root is between x2 and x1
             return bisection(equation, x2, x1, tolerance, step + 1, maxSteps, steps);
         }
     }
 
-    /**
-     * Secant Method
-     * 
-     * @param equation  function f(x)
-     * @param x0        first guess
-     * @param x1        second guess
-     * @param tolerance convergence tolerance
-     * @param step      current step number (start from 1)
-     * @param maxSteps  maximum allowed steps
-     * @param steps     list to record iteration steps
-     * @return          approximated root or null if fails
-     * @throws Exception on divide by zero or exceeding max steps
-     */
+    // Secant Method
     public static Double secant(String equation, double x0, double x1, double tolerance, int step, int maxSteps, List<Step> steps) throws Exception {
+        // Evaluate function at x0 and x1
+        double f0 = evaluateFunction(equation, x0);
+        double f1 = evaluateFunction(equation, x1);
 
+        // Check for Maximum iterations
         if (step > maxSteps) {
             throw new Exception("Maximum Number of Iterations Exceeded.");
         }
 
-        double f0 = evaluateFunction(equation, x0);
-        double f1 = evaluateFunction(equation, x1);
-
+        // Check for valid interval
         double denominator = f1 - f0;
         if (Math.abs(denominator) < 1e-12) {
             
@@ -230,40 +209,31 @@ public class CalculatorBackend {
             throw new Exception("Divide by zero error!");
         }
 
+        // Calculate next approximation using Secant formula
         double x2 = x1 - f1 * (x1 - x0) / denominator;
-        x2 = roundToTolerance(x2, tolerance);
         double f2 = evaluateFunction(equation, x2);
+        // Add step to the list
         steps.add(new Step(step, x0, x1, x2, f2, tolerance));
 
-        
+        // Check for convergence
         if (Math.abs(f2) <= tolerance || Math.abs(x2 - x1) <= tolerance) {
             return x2;
         }
 
+        // Recursion
         return secant(equation, x1, x2, tolerance, step + 1, maxSteps, steps);
     }
 
-    /**
-     * False Position (Regula Falsi) Method
-     * 
-     * @param equation  function f(x)
-     * @param x0        interval start
-     * @param x1        interval end
-     * @param tolerance convergence tolerance
-     * @param step      current step number (start from 1)
-     * @param maxSteps  maximum allowed steps
-     * @param steps     list to record iteration steps
-     * @return          approximated root or null if fails
-     * @throws Exception on divide by zero or exceeding max steps
-     */
+    // False Position Method
     public static Double falsePosition(String equation, double x0, double x1, double tolerance, int step, int maxSteps, List<Step> steps) throws Exception {
+        // Evaluate function at x0 and x1
+        double f0 = evaluateFunction(equation, x0);
+        double f1 = evaluateFunction(equation, x1);
+
         // Check for max steps
         if (step > maxSteps) {
             throw new Exception("Maximum Number of Iterations Exceeded. Try changing the guess values.");
         }
-
-        double f0 = evaluateFunction(equation, x0);
-        double f1 = evaluateFunction(equation, x1);
 
         // Check for valid interval
         if (step == 1 && f0 * f1 >= 0) {
@@ -275,21 +245,21 @@ public class CalculatorBackend {
 
         // Calculate x2 using False Position formula
         double x2 = (x0 * f1 - x1 * f0) / (f1 - f0);
-        x2 = roundToTolerance(x2, tolerance);
         double fx2 = evaluateFunction(equation, x2);
-        fx2 = roundToTolerance(fx2, tolerance);
+      
 
         // Calculate error (difference from previous x2)
         double error = (steps.isEmpty()) ? Math.abs(x1 - x0) : Math.abs(x2 - steps.get(steps.size() - 1).getX2());
 
-        // Record step
+        // Add step to the list
         steps.add(new Step(step, x0, x1, x2, fx2, tolerance));
 
-        // Stopping criteria: function value or error
+        // Check for convergence
         if (Math.abs(fx2) <= tolerance || error <= tolerance) {
             return x2;
         }
 
+        // Recursion
         // Update interval for next step
         if (f0 * fx2 < 0) {
             // Root is between x0 and x2

@@ -1,9 +1,8 @@
 import com.formdev.flatlaf.FlatDarculaLaf; // Dark theme
-import net.miginfocom.swing.MigLayout;
-
 import javax.swing.*;
 import java.awt.*;
 
+//Main Panel and Main Frame Class
 public class CalculatorSwing extends JFrame {
 
     public CalculatorSwing() {

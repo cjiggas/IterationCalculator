@@ -1,10 +1,9 @@
 import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Arrays;
 
+//Caclutor Panel Classes
 public class MethodCalculatorPanel extends JPanel {
     private JTextField functionField;
     private JTextField initialGuessField1;
@@ -53,8 +52,8 @@ public class MethodCalculatorPanel extends JPanel {
         functionField = new PlaceholderTextField(placeholder);
         functionField.setFont(new Font("Monospaced", Font.PLAIN, 16));
         functionField.setBorder(BorderFactory.createCompoundBorder(
-            new RoundedBorder(21, outlineColor, 3),  // outer border with rounded corners
-            BorderFactory.createEmptyBorder(8, 16, 8, 16)  // inner padding
+            new RoundedBorder(21, outlineColor, 3),  
+            BorderFactory.createEmptyBorder(8, 16, 8, 16)  
         ));
         functionField.setBackground(panelBackgroundColor);
         functionField.setForeground(textColor);
@@ -65,7 +64,7 @@ public class MethodCalculatorPanel extends JPanel {
         RoundedPanel functionPanel = new RoundedPanel(27, panelBackgroundColor, outlineColor);
         functionPanel.setLayout(new BorderLayout());
         functionPanel.add(functionField, BorderLayout.CENTER);
-        left.add(functionPanel, "span 2, h 54!, growx, wrap"); // Increased height from 48 to 54
+        left.add(functionPanel, "span 2, h 54!, growx, wrap"); 
 
         // Initial Guess labels
         JLabel guessLabel1 = new JLabel("Initial Guess");
@@ -100,6 +99,7 @@ public class MethodCalculatorPanel extends JPanel {
         guess1Panel.add(initialGuessField1, BorderLayout.CENTER);
         left.add(guess1Panel, "h 54!, growx");
 
+        //For methods that require two guesses
         if (hasTwoGuesses) {
             initialGuessField2 = new PlaceholderTextField("e.g., x₁ = 2");
             initialGuessField2.setFont(new Font("Monospaced", Font.PLAIN, 16));
@@ -127,6 +127,7 @@ public class MethodCalculatorPanel extends JPanel {
         guessHint1.setForeground(hintTextColor);
         left.add(guessHint1);
 
+        // For methods that require two guesses
         if (hasTwoGuesses) {
             JLabel guessHint2 = new JLabel("Initial guess for x₁");
             guessHint2.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -201,14 +202,14 @@ public class MethodCalculatorPanel extends JPanel {
         RoundedPanel historyPanel = new RoundedPanel(radius, panelBackgroundColor, outlineColor);
         historyPanel.setLayout(new BorderLayout());
 
-        // Update history label styling
+        // History label styling
         JLabel historyLabel = new JLabel("Calculation History");
         historyLabel.setFont(new Font("Consolas", Font.BOLD, 20));
         historyLabel.setForeground(textColor);
         historyLabel.setBorder(BorderFactory.createEmptyBorder(10, 18, 0, 0));
         historyPanel.add(historyLabel, BorderLayout.NORTH);
 
-        // Update history area styling
+        // History area styling
         historyArea = new JTextArea("No calculations yet. Start by entering a function.");
         historyArea.setEditable(false);
         historyArea.setFont(new Font("Monospaced", Font.PLAIN, 15));
@@ -233,13 +234,13 @@ public class MethodCalculatorPanel extends JPanel {
         RoundedPanel answerPanel = new RoundedPanel(radius, panelBackgroundColor, outlineColor);
         answerPanel.setLayout(new MigLayout("insets 0, gap 0", "[grow]", "[][]"));
 
-        // Update Root label with white text
+        //  Root label with white text
         JLabel answerLabel = new JLabel("Root");
         answerLabel.setFont(new Font("Consolas", Font.BOLD, 20));
         answerLabel.setForeground(textColor);  // Using textColor (light gray/white) from theme
         answerLabel.setBorder(BorderFactory.createEmptyBorder(10, 18, 0, 0));
 
-        // Update answer field with dark theme colors
+        // Answer field with dark theme colors
         answerField = new JTextField();
         answerField.setEditable(false);
         answerField.setFont(new Font("Monospaced", Font.BOLD, 15));
@@ -269,6 +270,7 @@ public class MethodCalculatorPanel extends JPanel {
             setName("Bisection");
         }
 
+        // Set the button action
         calculateButton.addActionListener(e -> {
             calculateButton.setEnabled(false);
             calculateButton.setText("Calculating...");
@@ -294,34 +296,39 @@ public class MethodCalculatorPanel extends JPanel {
             worker.execute();
         });
     }
-            private boolean isNumeric(String s) {
-            try {
-                Double.parseDouble(s);
-                return true;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
 
-        private boolean isValidTolerance(double tol) {
+    //Error Handlings
+    private boolean isNumeric(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    // Check if the tolerance is valid (greater than 0 and less than 1)
+    private boolean isValidTolerance(double tol) {
             return tol > 0 && tol < 1;
-        }
+    }
 
+    //Calculation
     private void performCalculation() {
+        // Get the input values
         String function = functionField.getText().trim();
         String x0Text = initialGuessField1.getText().trim();
         String tolText = toleranceField.getText().trim();
         String x1Text = (initialGuessField2 != null) ? initialGuessField2.getText().trim() : null;
 
-        clearHistory(); // clear before checking
+        clearHistory(); 
 
+        // Validate inputs
         if (function.isEmpty()) {
             showError("Error: Function field cannot be empty.");
             return;
         }
 
         double x0, tol, x1 = 0;
-
+        //Validate initial guesses 
         if (!isNumeric(x0Text)) {
             showError("Error: Initial guess x₀ must be numeric.");
             return;
@@ -333,11 +340,13 @@ public class MethodCalculatorPanel extends JPanel {
         x0 = Double.parseDouble(x0Text);
         tol = Double.parseDouble(tolText);
 
+        //Validate tolerance
         if (!isValidTolerance(tol)) {
             showError("Error: Tolerance must be a positive value less than 1.");
             return;
         }
 
+        //For methods that require two guesses
         if (hasTwoGuesses) {
             if (x1Text == null || x1Text.isEmpty()) {
                 showError("Error: Second initial guess x₁ is required.");
@@ -348,11 +357,12 @@ public class MethodCalculatorPanel extends JPanel {
                 return;
             }
             x1 = Double.parseDouble(x1Text);
+            // Check if x0 and x1 are the same
             if (x0 == x1) {
                 showError("Error: Initial guesses x₀ and x₁ must be different.");
                 return;
             }
-
+        // Bracket check for Bisection, False Position, and Secant methods
         String method = getName();
         if (method.equals("Bisection") || method.equals("False Position") || method.equals("Secant")) {
             try {
@@ -368,16 +378,16 @@ public class MethodCalculatorPanel extends JPanel {
             }
         }
         } 
-        
 
-
+        // Try Catch for calculation
         try {
-            // Clear old data
             clearHistory();
-
+            //Intialize steps list
             java.util.List<CalculatorBackend.Step> steps = new java.util.ArrayList<>();
-            int maxSteps = 100; // You may adjust this as needed
+            // Set maximum steps
+            int maxSteps = 100; 
 
+            // Perform the calculation based on the selected method
             switch (getName()) {
                 case "Newton-Raphson":
                     CalculatorBackend.newton(function, x0, tol, 1, steps);
@@ -399,10 +409,12 @@ public class MethodCalculatorPanel extends JPanel {
                     return;
             }
 
+            //Display Steps using StringBuilder
             StringBuilder sb = new StringBuilder();
             sb.append("Calculation Steps:\n");
-           sb.append("--------------------------------------------------------------------------\n");
+            sb.append("--------------------------------------------------------------------------\n");
 
+            //Steps for each methods
             if (!steps.isEmpty()) {
                 String method = getName();
                 switch (method) {
@@ -452,7 +464,10 @@ public class MethodCalculatorPanel extends JPanel {
             }
 
             historyArea.setText(sb.toString());
-
+            //Display the root
+            // Get the root based on the method
+            // For Newton-Raphson and Fixed-Point, use Xn+1
+            // For Secant, Bisection, and False Position, use X2
             if (!steps.isEmpty()) {
                 double root;
                 switch (getName()) {
@@ -479,12 +494,12 @@ public class MethodCalculatorPanel extends JPanel {
             clearHistory();
         }
     }
-
+    //Red color for error messages
     private void showError(String msg) {
         answerField.setForeground(Color.RED);
         answerField.setText(msg);
     }
-
+    // Clear the history area
    private void clearHistory() {
         historyArea.setText("");
     }

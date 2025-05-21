@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
+// PlaceholderTextField class to create a text field with placeholder text
 public class PlaceholderTextField extends JTextField {
     private String placeholder;
 

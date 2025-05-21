@@ -1,14 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 
-
+//RoundedPanel class to create a panel with rounded corners and a specified background color
 public class RoundedPanel extends JPanel {
     private final int radius;
     private final Color bg;
     private final Color outline;
 
     public RoundedPanel(int radius, Color bg) {
-        this(radius, bg, new Color(200, 210, 230)); // default outline color
+        this(radius, bg, new Color(200, 210, 230)); 
     }
 
     public RoundedPanel(int radius, Color bg, Color outline) {

@@ -1,10 +1,11 @@
 import javax.swing.border.AbstractBorder;
 import java.awt.*;
 
+// RoundedBorder class to create a rounded border with a specified radius and color
 public class RoundedBorder extends AbstractBorder {
     private final int radius;
     private final Color color;
-    private final int thickness;  // New parameter for border thickness
+    private final int thickness;  
 
     public RoundedBorder(int radius, Color color, int thickness) {
         this.radius = radius;
@@ -17,7 +18,7 @@ public class RoundedBorder extends AbstractBorder {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(color);
-        g2.setStroke(new BasicStroke(thickness)); // Use the thickness parameter
+        g2.setStroke(new BasicStroke(thickness)); 
         g2.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         g2.dispose();
     }
